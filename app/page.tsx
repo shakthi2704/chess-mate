@@ -1,0 +1,28 @@
+import BackgroundGlows from '@/components/landing/BackgroundGlows'
+import Ctasection from '@/components/landing/Ctasection'
+import FeaturesSection from '@/components/landing/FeaturesSection'
+import FooterSection from '@/components/landing/FooterSection'
+import { HeroSection } from '@/components/landing/HeroSection'
+import LeaderboardSection from '@/components/landing/LeaderboardSection'
+import Navbar from '@/components/landing/Navbar'
+import StatbarSection from '@/components/landing/StatbarSection'
+import Image from 'next/image'
+
+export default function HomePage() {
+  return (
+    <div className="min-h-screen bg-[#0c0c0e] flex flex-col">
+      <BackgroundGlows />
+      <Navbar />
+      <HeroSection />
+      <StatbarSection />
+      <FeaturesSection />
+      <LeaderboardSection />
+      <Ctasection />
+      <FooterSection />
+      <style>{`
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+        html { scroll-behavior: smooth; }
+      `}</style>
+    </div>
+  )
+}
