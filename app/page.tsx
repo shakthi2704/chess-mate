@@ -1,3 +1,6 @@
+import { auth } from '@/lib/auth'
+import { redirect } from 'next/navigation'
+
 import BackgroundGlows from '@/components/landing/BackgroundGlows'
 import Ctasection from '@/components/landing/Ctasection'
 import FeaturesSection from '@/components/landing/FeaturesSection'
@@ -6,9 +9,11 @@ import { HeroSection } from '@/components/landing/HeroSection'
 import LeaderboardSection from '@/components/landing/LeaderboardSection'
 import Navbar from '@/components/landing/Navbar'
 import StatbarSection from '@/components/landing/StatbarSection'
-import Image from 'next/image'
 
-export default function HomePage() {
+
+export default async function HomePage() {
+  const session = await auth()
+  if (!session?.user) redirect('/login')
   return (
     <div className="min-h-screen bg-[#0c0c0e] flex flex-col">
       <BackgroundGlows />
