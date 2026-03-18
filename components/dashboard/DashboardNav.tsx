@@ -3,6 +3,8 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { signOut } from 'next-auth/react'
+
 
 // TODO: replace with real user data from Supabase
 const user = {
@@ -22,9 +24,7 @@ function DashboardNav() {
     const pathname = usePathname()
 
     const handleSignOut = async () => {
-        // TODO: wire up Supabase sign out
-        // await supabase.auth.signOut()
-        // router.push('/')
+        await signOut({ callbackUrl: '/' })
         console.log('sign out')
     }
     return (
