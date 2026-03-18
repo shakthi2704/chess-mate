@@ -224,17 +224,24 @@ export default function GamePage() {
                             style={{ border: '1px solid rgba(245,158,11,0.15)', boxShadow: '0 0 40px rgba(245,158,11,0.08)' }}
                         >
                             <Chessboard
-                                {...({
+                                options={{
                                     position: game.fen(),
-                                    onPieceDrop: onDrop,
                                     boardOrientation: boardOrientation as 'white' | 'black',
-                                    animationDuration: 150,
-                                    customBoardStyle: { borderRadius: '0' },
-                                    customDarkSquareStyle: { backgroundColor: '#2a1f00' },
-                                    customLightSquareStyle: { backgroundColor: '#3d2f00' },
-                                    customDropSquareStyle: { boxShadow: 'inset 0 0 1px 4px rgba(245,158,11,0.6)' },
-                                    customArrowColor: 'rgba(245,158,11,0.7)',
-                                } as any)}
+                                    animationDurationInMs: 150,
+                                    allowDragging: true,
+                                    boardStyle: { borderRadius: '0' },
+                                    darkSquareStyle: { backgroundColor: '#2a1f00' },
+                                    lightSquareStyle: { backgroundColor: '#3d2f00' },
+                                    dropSquareStyle: { boxShadow: 'inset 0 0 1px 4px rgba(245,158,11,0.6)' },
+                                    onPieceDrop: ({ sourceSquare, targetSquare }: {
+                                        sourceSquare: string
+                                        targetSquare: string | null
+                                        piece: any
+                                    }) => {
+                                        if (!targetSquare) return false
+                                        return onDrop(sourceSquare, targetSquare)
+                                    },
+                                }}
                             />
                         </div>
 
