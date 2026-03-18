@@ -2,16 +2,16 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useSession, signOut } from 'next-auth/react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { signOut } from 'next-auth/react'
 
 
 // TODO: replace with real user data from Supabase
-const user = {
-    username: 'GrandKnight',
-    avatarUrl: '',
-    elo: 1247,
-}
+// const user = {
+//     username: 'GrandKnight',
+//     avatarUrl: '',
+//     elo: 1247,
+// }
 
 const NAV_LINKS = [
     { href: '/dashboard', label: 'Dashboard', icon: '⊞' },
@@ -20,13 +20,17 @@ const NAV_LINKS = [
 ]
 
 function DashboardNav() {
-
     const pathname = usePathname()
+    const { data: session } = useSession()
+
+    const username = session?.user?.username ?? session?.user?.name ?? 'Player'
+    const elo = session?.user?.elo ?? 1200
+    const avatarUrl = session?.user?.image ?? ''
 
     const handleSignOut = async () => {
         await signOut({ callbackUrl: '/' })
-        console.log('sign out')
     }
+
     return (
         <nav
             className="sticky top-0 z-50 px-6 py-3"
@@ -82,7 +86,7 @@ function DashboardNav() {
                     >
                         <span className="text-xs text-[#57534e]">ELO</span>
                         <span className="text-sm font-bold text-[#fbbf24]">
-                            {user.elo.toLocaleString()}
+                            {elo.toLocaleString()}
                         </span>
                     </div>
 
@@ -90,12 +94,12 @@ function DashboardNav() {
                     <div className="flex items-center gap-3">
                         <Link href="/profile">
                             <Avatar className="w-8 h-8 rounded-full cursor-pointer ring-2 ring-transparent hover:ring-amber-500/40 transition-all">
-                                <AvatarImage src={user.avatarUrl} alt={user.username} />
+                                <AvatarImage src={avatarUrl} alt={username} />
                                 <AvatarFallback
                                     className="text-xs font-bold rounded-full"
                                     style={{ background: '#1c1000', color: '#fbbf24' }}
                                 >
-                                    {user.username.slice(0, 2).toUpperCase()}
+                                    {username.slice(0, 2).toUpperCase()}
                                 </AvatarFallback>
                             </Avatar>
                         </Link>

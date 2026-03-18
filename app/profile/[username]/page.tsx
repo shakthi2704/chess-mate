@@ -1,25 +1,65 @@
 import { auth } from '@/lib/auth'
 import { pool } from '@/lib/db'
-import { RecentGamesClient } from './RecentGamesClient'
+import { notFound } from 'next/navigation'
+import ProfileClient from '@/components/profile/ProfileClient'
 
-const RecentGames = async () => {
-    const session = await auth()
-    if (!session?.user?.id) return null
+interface Props {
+    params: { username: string }
+}
 
-    const result = await pool.query(
-        `SELECT 
+const getProfileData = async (username: string) => {
+    // Get user profile
+    const userResult = await pool.query(
+        `SELECT
+      u.id,
+      u.username,
+      u.avatar_url,
+      u.elo_rating,
+      u.total_games,
+      u.wins,
+      u.losses,
+      u.draws,
+      u.created_at,
+      case when u.total_games > 0
+        then round((u.wins::numeric / u.total_games) * 100, 1)
+        else 0
+      end as win_rate
+     FROM public.users u
+     WHERE u.username = $1`,
+        [username]
+    )
+
+    if (!userResult.rows[0]) return null
+    const user = userResult.rows[0]
+
+    // Get ELO history (last 30 entries)
+    const eloResult = await pool.query(
+        `SELECT
+      elo_after,
+      elo_change,
+      created_at
+     FROM public.elo_history
+     WHERE user_id = $1
+     ORDER BY created_at ASC
+     LIMIT 30`,
+        [user.id]
+    )
+
+    // Get full game history
+    const gamesResult = await pool.query(
+        `SELECT
       g.id,
       g.game_mode,
       g.time_control,
       g.ai_difficulty,
       g.ended_at,
-      CASE 
+      CASE
         WHEN g.result = 'draw' THEN 'draw'
         WHEN (g.result = 'white' AND g.white_player_id = $1) THEN 'win'
         WHEN (g.result = 'black' AND g.black_player_id = $1) THEN 'win'
         ELSE 'loss'
       END as user_result,
-      CASE 
+      CASE
         WHEN g.white_player_id = $1 THEN g.black_player_id
         ELSE g.white_player_id
       END as opponent_id,
@@ -27,19 +67,19 @@ const RecentGames = async () => {
       eh.elo_after,
       eh.elo_change
      FROM public.games g
-     LEFT JOIN public.elo_history eh 
+     LEFT JOIN public.elo_history eh
        ON eh.game_id = g.id AND eh.user_id = $1
-     WHERE 
+     WHERE
        (g.white_player_id = $1 OR g.black_player_id = $1)
        AND g.status = 'completed'
      ORDER BY g.ended_at DESC
-     LIMIT 5`,
-        [session.user.id]
+     LIMIT 20`,
+        [user.id]
     )
 
-    // fetch opponent usernames
+    // fetch opponent names
     const games = await Promise.all(
-        result.rows.map(async (game: any) => {
+        gamesResult.rows.map(async (game: any) => {
             let opponentName = 'Stockfish'
             let opponentInitials = 'AI'
             let opponentElo = 0
@@ -77,7 +117,29 @@ const RecentGames = async () => {
         })
     )
 
-    return <RecentGamesClient games={games} />
+    return {
+        user,
+        eloHistory: eloResult.rows,
+        games,
+    }
 }
 
-export default RecentGames
+const ProfilePage = async ({ params }: Props) => {
+    const session = await auth()
+    const { username } = await params        // ← await params
+    const data = await getProfileData(username)
+    if (!data) notFound()
+
+    const isOwnProfile = session?.user?.id === data.user.id
+
+    return (
+        <ProfileClient
+            user={data.user}
+            eloHistory={data.eloHistory}
+            games={data.games}
+            isOwnProfile={isOwnProfile}
+        />
+    )
+}
+
+export default ProfilePage
