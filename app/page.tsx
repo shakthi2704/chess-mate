@@ -1,5 +1,4 @@
-import { auth } from '@/lib/auth'
-import { redirect } from 'next/navigation'
+
 
 import BackgroundGlows from '@/components/landing/BackgroundGlows'
 import Ctasection from '@/components/landing/Ctasection'
@@ -12,8 +11,8 @@ import StatbarSection from '@/components/landing/StatbarSection'
 
 
 export default async function HomePage() {
-  const session = await auth()
-  if (!session?.user) redirect('/login')
+  // const session = await auth()
+  // if (!session?.user) redirect('/login')
   return (
     <div className="min-h-screen bg-[#0c0c0e] flex flex-col">
       <BackgroundGlows />

@@ -8,9 +8,9 @@ const STOCKFISH_API = 'https://stockfish.online/api/s/v2.php'
 
 // Map our difficulty levels to Stockfish depth
 const DEPTH_MAP: Record<number, number> = {
-    2: 1,   // Easy
-    6: 5,   // Medium
-    12: 10,  // Hard
+    2: 6,   // Easy
+    6: 8,   // Medium
+    12: 12,  // Hard
     20: 15,  // Master
 }
 
