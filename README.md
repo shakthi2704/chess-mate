@@ -42,3 +42,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 #3B82F6
 #F59E0B
 #FBBF24
+
+#070D1A → rgba(7,13,26,1)
+#0D1829 → rgba(13,24,41,1)
+#1D4ED8 → rgba(29,78,216,1)
+#3B82F6 → rgba(59,130,246,1)
+#F59E0B → rgba(245,158,11,1)
+#FBBF24 → rgba(251,191,36,1)

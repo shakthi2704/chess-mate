@@ -6,14 +6,16 @@ interface GameControlsProps {
     onResign: () => void
     onOfferDraw: () => void
     onAcceptDraw?: () => void
-    drawOffered?: boolean       // true when opponent has offered a draw
-    drawOfferSent?: boolean     // true when you already offered a draw
+    onDeclineDraw?: () => void
+    drawOffered?: boolean
+    drawOfferSent?: boolean
     gameOver?: boolean
 }
 const GameControls = ({
     onResign,
     onOfferDraw,
     onAcceptDraw,
+    onDeclineDraw,
     drawOffered = false,
     drawOfferSent = false,
     gameOver = false,
@@ -35,6 +37,8 @@ const GameControls = ({
     }
 
     if (gameOver) return null
+
+
 
     return (
         <div className="flex flex-col gap-2">
@@ -59,6 +63,7 @@ const GameControls = ({
                             Accept
                         </button>
                         <button
+                            onClick={onDeclineDraw}
                             className="px-3 py-1.5 rounded-lg text-xs font-bold transition-all hover:bg-white/[0.07]"
                             style={{
                                 background: 'rgba(255,255,255,0.05)',
