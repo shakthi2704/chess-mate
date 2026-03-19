@@ -81,12 +81,12 @@ export const useAblyGame = ({
 
         // ── Subscribe — use refs so callbacks are always fresh ──
         channel.subscribe((msg) => {
-            console.log('RAW MSG received - clientId:', msg.clientId, 'myClientId:', clientId, 'blocked:', msg.clientId === clientId)
+            // console.log('RAW MSG received - clientId:', msg.clientId, 'myClientId:', clientId, 'blocked:', msg.clientId === clientId)
             const event = msg.data as GameEvent
 
             if (msg.clientId === clientId) return
 
-            console.log('Received event:', event.type, 'from:', msg.clientId)
+            // console.log('Received event:', event.type, 'from:', msg.clientId)
 
             switch (event.type) {
                 case 'move':
@@ -99,7 +99,7 @@ export const useAblyGame = ({
                     onResignRef.current(event.player)
                     break
                 case 'draw_offer':
-                    console.log('Draw offer received!')
+                    // console.log('Draw offer received!')
                     onDrawOfferRef.current(event.from)
                     break
                 case 'draw_accept':
@@ -125,7 +125,7 @@ export const useAblyGame = ({
         channel.presence.subscribe('leave', () => setOpponentOnline(false))
 
         client.connection.on('connected', () => {
-            console.log('ABLY CONNECTED with clientId:', clientId, 'playerColor:', playerColorRef.current)
+            // console.log('ABLY CONNECTED with clientId:', clientId, 'playerColor:', playerColorRef.current)
             setConnected(true)
             channel.presence.enter({
                 color: playerColorRef.current,
