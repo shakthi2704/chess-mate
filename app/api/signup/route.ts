@@ -40,9 +40,13 @@ export async function POST(req: NextRequest) {
     }
 
     // ── Check if email already exists ──
+    // const emailCheck = await pool.query(
+    //   'SELECT id FROM auth.users WHERE email = $1',
+    //   [email]
+    // )
     const emailCheck = await pool.query(
-      'SELECT id FROM auth.users WHERE email = $1',
-      [email]
+      'SELECT id FROM public.users WHERE username = $1',
+      [username]
     )
     if (emailCheck.rows.length > 0) {
       return NextResponse.json(
